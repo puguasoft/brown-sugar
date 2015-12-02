@@ -11,13 +11,14 @@ android {
     }
 
     buildTypes {
-        release {
+        release { 
             minifyEnabled false
         }
     }
 }
 
 dependencies {
+    compile 'net.zetetic:android-database-sqlcipher:3.3.1-2@aar'
     testCompile 'junit:junit:4.12'
 }
 

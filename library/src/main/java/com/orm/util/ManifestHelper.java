@@ -20,6 +20,7 @@ public class ManifestHelper {
     public final static String METADATA_VERSION = "VERSION";
     public final static String METADATA_DOMAIN_PACKAGE_NAME = "DOMAIN_PACKAGE_NAME";
     public final static String METADATA_QUERY_LOG = "QUERY_LOG";
+    public final static String METADATA_ENCRYPTION_KEY = "ENCRYPTION_KEY";
     /**
      * The default name for the database unless specified in the AndroidManifest.
      */
@@ -83,6 +84,22 @@ public class ManifestHelper {
      */
     public static boolean getDebugEnabled(Context context) {
         return getMetaDataBoolean(context, METADATA_QUERY_LOG);
+    }
+
+    /**
+     * Grabs the SQLCipher encryption key from the manifest.
+     *
+     * @param context  the {@link android.content.Context} of the Android application
+     * @return the SQLCipher encryption key from the manifest.
+     */
+    public static String getDatabaseKey(Context context){
+        String dbKey = getMetaDataString(context, METADATA_ENCRYPTION_KEY);
+
+        if (dbKey == null) {
+            dbKey = "";
+        }
+
+        return dbKey;
     }
 
     private static String getMetaDataString(Context context, String name) {
