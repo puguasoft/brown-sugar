@@ -1,6 +1,8 @@
-# Sugar ORM [![Build Status](https://travis-ci.org/satyan/sugar.svg?branch=master)](https://travis-ci.org/satyan/sugar) [![Coverage Status](https://coveralls.io/repos/satyan/sugar/badge.svg?branch=master)](https://coveralls.io/r/satyan/sugar?branch=master)
+# Brown Sugar ORM (Sugar + SQLCipher) [![Build Status](https://travis-ci.org/satyan/sugar.svg?branch=master)](https://travis-ci.org/satyan/sugar) [![Coverage Status](https://coveralls.io/repos/satyan/sugar/badge.svg?branch=master)](https://coveralls.io/r/satyan/sugar?branch=master)
 
-Insanely easy way to work with Android databases.
+[![Join the chat at https://gitter.im/satyan/sugar](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/satyan/sugar?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+Insanely easy way to work with Android SQLCipher databases.
 
 Official documentation can be found [here](http://satyan.github.io/sugar). The example application is provided in the **example** folder in the source.
 
@@ -21,7 +23,7 @@ There are four ways to install Sugar:
 This is the preferred way. Simply add:
 
 ```groovy
-compile 'com.github.satyan:sugar:1.3.1'
+compile 'com.github.satyan:sugar:1.4'
 ```
 
 to your project dependencies and run `gradle build` or `gradle assemble`.
@@ -34,7 +36,7 @@ Declare the dependency in Maven:
 <dependency>
     <groupId>com.github.satyan</groupId>
     <artifactId>sugar</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
 </dependency>
 ```
 
@@ -49,6 +51,79 @@ Visit the [releases](https://github.com/satyan/sugar/releases) page to download 
 ===================
 
 After installing, check out how to set up your first database and models [here](http://satyan.github.io/sugar/getting-started.html).
+
+## Examples
+### SugarRecord
+```
+public class Book extends SugarRecord {
+  @Unique
+  String isbn;
+  String title;
+  String edition;
+
+  // Default constructor is necessary for SugarRecord
+  public Book() {
+
+  }
+
+  public Book(String isbn, String title, String edition) {
+    this.isbn = isbn;
+    this.title = title;
+    this.edition = edition;
+  }
+}
+```
+or
+```
+@Table
+public class Book { ... }
+```
+
+### Save Entity
+```
+Book book = new Book("isbn123", "Title here", "2nd edition")
+book.save();
+```
+
+### Load Entity
+```
+Book book = Book.findById(Book.class, 1);
+```
+
+### Update Entity
+```
+Book book = Book.findById(Book.class, 1);
+book.title = "updated title here"; // modify the values
+book.edition = "3rd edition";
+book.save(); // updates the previous entry with new values.
+```
+
+### Delete Entity
+```
+Book book = Book.findById(Book.class, 1);
+book.delete();
+```
+
+### Update Entity based on Unique values
+```
+Book book = new Book("isbn123", "Title here", "2nd edition")
+book.save();
+
+// Update book with isbn123
+Book sameBook = new Book("isbn123", "New Title", "5th edition")
+sameBook.update();
+
+book.getId() == sameBook.getId(); // true
+```
+
+### Bulk Insert
+```
+List<Book> books = new ArrayList<>();
+books.add(new Book("isbn123", "Title here", "2nd edition"))
+books.add(new Book("isbn456", "Title here 2", "3nd edition"))
+books.add(new Book("isbn789", "Title here 3", "4nd edition"))
+SugarRecord.saveInTx(books);
+```
 
 ## Contributing
 

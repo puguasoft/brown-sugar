@@ -1,17 +1,19 @@
 package com.orm;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import com.orm.util.ManifestHelper;
 import com.orm.util.SugarCursorFactory;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 import static com.orm.util.ManifestHelper.getDatabaseVersion;
 import static com.orm.util.ManifestHelper.getDebugEnabled;
 
 public class SugarDb extends SQLiteOpenHelper {
 
+    private final String databasePassword;
     private final SchemaGenerator schemaGenerator;
     private SQLiteDatabase sqLiteDatabase;
 
@@ -19,6 +21,9 @@ public class SugarDb extends SQLiteOpenHelper {
         super(context, ManifestHelper.getDatabaseName(context),
                 new SugarCursorFactory(getDebugEnabled(context)), getDatabaseVersion(context));
         schemaGenerator = new SchemaGenerator(context);
+
+        SQLiteDatabase.loadLibs(context);
+        databasePassword = ManifestHelper.getDatabaseKey(context);
     }
 
     @Override
@@ -33,7 +38,7 @@ public class SugarDb extends SQLiteOpenHelper {
 
     public synchronized SQLiteDatabase getDB() {
         if (this.sqLiteDatabase == null) {
-            this.sqLiteDatabase = getWritableDatabase();
+            this.sqLiteDatabase = getWritableDatabase(databasePassword);
         }
 
         return this.sqLiteDatabase;
